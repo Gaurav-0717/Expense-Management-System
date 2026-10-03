@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_BASE_URL from '../../config/api';
 import "./login.css";
 
 const Login = ({ onLogin, switchToSignup }) => {
@@ -15,7 +16,7 @@ const Login = ({ onLogin, switchToSignup }) => {
         if (!formData.email || !formData.password) return alert('Please fill all fields');
         setLoading(true);
         try {
-                        const res = await fetch('http://127.0.0.1:5000/api/login', {
+            const res = await fetch(`${API_BASE_URL}/api/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -26,7 +27,7 @@ const Login = ({ onLogin, switchToSignup }) => {
                 localStorage.setItem('isLoggedIn', 'true');
                                 // fetch profile to populate app state
                                 try {
-                                    const p = await fetch('http://127.0.0.1:5000/api/profile', { headers: { Authorization: `Bearer ${data.token}` } });
+                                    const p = await fetch(`${API_BASE_URL}/api/profile`, { headers: { Authorization: `Bearer ${data.token}` } });
                                     const pj = await p.json();
                                     if (p.ok) {
                                         // store minimal profile

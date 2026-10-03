@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, DollarSign, Palette, Save, Trash2 } from 'lucide-react';
+import API_BASE_URL from '../../config/api';
 import './settings.css';
 
 const Settings = ({ profile, onProfileUpdate }) => {
@@ -23,7 +24,7 @@ const Settings = ({ profile, onProfileUpdate }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/profile', {
+        const res = await fetch(`${API_BASE_URL}/api/profile`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ name, email, monthlyIncome: Number(monthlyIncome), theme })
@@ -54,7 +55,7 @@ const Settings = ({ profile, onProfileUpdate }) => {
       }
 
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/account', {
+        const res = await fetch(`${API_BASE_URL}/api/account`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` }
         });

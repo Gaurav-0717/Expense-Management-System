@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_BASE_URL from '../../config/api';
 import './signup.css';
 
 const Signup = ({ switchToLogin }) => {
@@ -12,7 +13,7 @@ const Signup = ({ switchToLogin }) => {
     if (!formData.name || !formData.email || !formData.password) return alert('Please fill all fields');
     setLoading(true);
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/signup', {
+      const res = await fetch(`${API_BASE_URL}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

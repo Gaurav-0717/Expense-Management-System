@@ -3,6 +3,7 @@ import Login from './component/login/login';
 import Signup from './component/signup/signup';
 import Navbar from './component/Navbar/navbar';
 import ErrorBoundary from './component/ErrorBoundary';
+import API_BASE_URL from './config/api';
 import './App.css';
 
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -29,7 +30,7 @@ const App = () => {
     if (!token) return;
     (async () => {
       try {
-        const res = await fetch('/api/profile', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE_URL}/api/profile`, { headers: { Authorization: `Bearer ${token}` } });
         const json = await res.json();
         if (res.ok) {
           setProfile(json.user);
@@ -66,7 +67,7 @@ const App = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      const res = await fetch('/api/profile', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/api/profile`, { headers: { Authorization: `Bearer ${token}` } });
       const json = await res.json(); 
       if (res.ok) {
         setProfile(json.user);

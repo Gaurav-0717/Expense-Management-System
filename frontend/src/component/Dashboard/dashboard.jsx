@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Plus, Edit2, Trash2, Loader2 } from 'lucide-react';
+import API_BASE_URL from '../../config/api';
 import "./dashboard.css"
 
 const calculateMonthlySummary = (expenses = []) => {
@@ -105,7 +106,7 @@ const Dashboard = React.memo(({ profile }) => {
     if (!token) return;
     (async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/expenses', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE_URL}/api/expenses`, { headers: { Authorization: `Bearer ${token}` } });
         const json = await res.json().catch(() => ({}));
           if (res.ok) {
           const allExpenses = json.expenses || [];
@@ -144,7 +145,7 @@ const Dashboard = React.memo(({ profile }) => {
     setAdding(true);
     (async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/expenses', {
+        const res = await fetch(`${API_BASE_URL}/api/expenses`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ amount: Number(amount), type, category: finalCategory, date, description })
@@ -180,7 +181,7 @@ const Dashboard = React.memo(({ profile }) => {
     if (!token) return alert('Not authenticated');
     (async () => {
       try {
-  const res = await fetch(`http://127.0.0.1:5000/api/expenses/${deleteId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch(`${API_BASE_URL}/api/expenses/${deleteId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
         const json = await res.json().catch(() => ({}));
           if (res.ok) {
           // Use functional update to avoid stale closures
@@ -211,7 +212,7 @@ const Dashboard = React.memo(({ profile }) => {
     if (!token) return alert('Not authenticated');
     setEditSaving(true);
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/expenses/${editId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/expenses/${editId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ amount: Number(editAmount), type: editType, category: editCategory, date: editDate, description: editDescription })

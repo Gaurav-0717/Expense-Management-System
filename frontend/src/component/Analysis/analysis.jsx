@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BarChart3, TrendingUp, Calendar, Filter } from 'lucide-react';
+import API_BASE_URL from '../../config/api';
 import './analysis.css';
 
 const Analysis = () => {
@@ -17,10 +18,10 @@ const Analysis = () => {
     (async () => {
       try {
         // fetch both expenses list and monthly report
-        const r1 = await fetch('http://127.0.0.1:5000/api/expenses', { headers: { Authorization: `Bearer ${token}` } });
+        const r1 = await fetch(`${API_BASE_URL}/api/expenses`, { headers: { Authorization: `Bearer ${token}` } });
         const j1 = await r1.json().catch(() => ({}));
         if (r1.ok) setExpenses(j1.expenses || []);
-        const r2 = await fetch('http://127.0.0.1:5000/api/expenses/report', { headers: { Authorization: `Bearer ${token}` } });
+        const r2 = await fetch(`${API_BASE_URL}/api/expenses/report`, { headers: { Authorization: `Bearer ${token}` } });
         const j2 = await r2.json().catch(() => ({}));
         if (r2.ok && j2) setReport(j2);
       } catch (e) { console.error(e); }
