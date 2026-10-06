@@ -20,7 +20,12 @@ const { authenticateToken } = require('./Middleware/authMiddleware');
 
 const app = express();
 app.set('trust proxy', 1);
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173').split(',').map(s => s.trim()).filter(Boolean);
+const defaultOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://frontend-three-rouge-rolbh6u9dy.vercel.app',
+].join(',');
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || defaultOrigins).split(',').map(s => s.trim()).filter(Boolean);
 
 if (!process.env.MONGO_URI) {
   throw new Error('MONGO_URI must be defined in the environment');
@@ -30,7 +35,24 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'replace_this_secret')
 }
 
 app.use(helmet());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. server-to-server, curl, mobile)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS: origin '${origin}' not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
+};
+
+app.use(cors(corsOptions));
+// Explicitly handle all OPTIONS preflight requests BEFORE route handlers
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false }));
 
